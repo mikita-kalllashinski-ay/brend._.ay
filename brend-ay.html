@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>brend._.ay</title>
+<style>
+  :root {
+    --bg-0: #050505;
+    --bg-1: #0f0f10;
+    --fg: #f5f5f5;
+    --fg-dim: #9a9a9a;
+    --line: rgba(255,255,255,0.09);
+    --line-strong: rgba(255,255,255,0.18);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    position: relative;
+    background:
+      radial-gradient(520px 320px at 12% 8%, rgba(47,111,239,0.16), transparent 60%),
+      radial-gradient(520px 320px at 88% 14%, rgba(154,106,63,0.14), transparent 60%),
+      radial-gradient(600px 360px at 50% 95%, rgba(239,68,68,0.12), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 3px),
+      linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 100%);
+    color: var(--fg);
+    font-family: "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 64px 20px 40px;
+    min-height: 100%;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 20%, transparent 75%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .zodiac-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .zodiac-bg span {
+    position: absolute;
+    font-weight: 700;
+    line-height: 1;
+    color: transparent;
+    background: linear-gradient(160deg, #f0f0f0 0%, #8a8a8a 45%, #2a2a2a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    filter: drop-shadow(0 3px 3px rgba(0,0,0,0.65)) drop-shadow(0 -1px 0 rgba(255,255,255,0.15));
+    opacity: 0.16;
+    user-select: none;
+  }
+
+  .lang-toggle {
+    position: fixed;
+    top: calc(18px + env(safe-area-inset-top, 0px));
+    right: 18px;
+    z-index: 5;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    background: rgba(20,20,20,0.75);
+    backdrop-filter: blur(6px);
+    color: var(--fg);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .lang-toggle:hover {
+    border-color: rgba(255,255,255,0.4);
+    transform: translateY(-2px);
+  }
+  .lang-toggle .globe { font-size: 13px; }
+
+  .brand-wrap, .row, .footer-row { position: relative; z-index: 1; }
+
+  .brand-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 60px;
+  }
+  .brand-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    margin-bottom: 16px;
+  }
+  .brand-eyebrow::before, .brand-eyebrow::after {
+    content: "";
+    width: 22px;
+    height: 1px;
+    background: var(--line-strong);
+  }
+  h1 {
+    font-size: clamp(36px, 9vw, 62px);
+    letter-spacing: -0.015em;
+    margin: 0;
+    text-align: center;
+    font-weight: 800;
+    background: linear-gradient(180deg, #ffffff 0%, #a9a9a9 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 60px rgba(255,255,255,0.08);
+  }
+  .brand-rule {
+    width: 72px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
+    margin-top: 22px;
+    position: relative;
+  }
+  .brand-rule::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -2px;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(255,255,255,0.8);
+  }
+  .brand-tag {
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--fg-dim);
+    letter-spacing: 0.01em;
+    text-align: center;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 18px;
+    width: 100%;
+    max-width: 920px;
+    margin-bottom: 24px;
+  }
+  a.btn {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #ffffff;
+    padding: 26px 26px 22px;
+    border-radius: 18px;
+    border: 1px solid var(--line-strong);
+    min-width: 240px;
+    max-width: 280px;
+    text-align: center;
+    background: linear-gradient(180deg, #161616 0%, #0e0e0e 100%);
+    overflow: hidden;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    word-break: break-word;
+  }
+  a.btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--accent-grad);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    z-index: 0;
+  }
+  a.btn::after {
+    content: "";
+    position: absolute;
+    top: -40%;
+    left: -60%;
+    width: 60%;
+    height: 220%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.12), transparent);
+    transform: rotate(20deg);
+    transition: left 0.6s ease;
+    z-index: 1;
+  }
+  a.btn:hover::after { left: 130%; }
+  a.btn:hover::before { opacity: 0.22; }
+
+  .fx {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+  a.btn:hover .fx { opacity: 1; }
+
+  /* --- Lightning (blue) --- */
+  .bolt {
+    position: absolute;
+    top: -15%;
+    width: 3px;
+    height: 140%;
+    background: linear-gradient(180deg, #ffffff 0%, #8fc0ff 55%, transparent 100%);
+    box-shadow: 0 0 10px 2px rgba(140,190,255,0.9);
+    clip-path: polygon(45% 0%, 60% 30%, 40% 38%, 65% 62%, 35% 70%, 55% 100%, 30% 66%, 50% 58%, 28% 34%, 48% 28%);
+    opacity: 0;
+    animation: flicker 1.3s infinite;
+  }
+  .bolt.b1 { left: 28%; animation-delay: 0s; }
+  .bolt.b2 { left: 62%; height: 120%; top: -5%; animation-delay: 0.35s; }
+  @keyframes flicker {
+    0%, 18%, 21%, 24%, 56%, 100% { opacity: 0; }
+    19%, 22%, 55% { opacity: 1; }
+  }
+
+  /* --- Earth (brown) --- */
+  .dust {
+    position: absolute;
+    bottom: 6%;
+    width: 5px;
+    height: 5px;
+    border-radius: 2px;
+    background: #c98b53;
+    opacity: 0;
+    animation: dustRise 1.6s ease-in infinite;
+  }
+  .dust.d1 { left: 18%; animation-delay: 0s; }
+  .dust.d2 { left: 40%; animation-delay: 0.3s; width: 3px; height: 3px; }
+  .dust.d3 { left: 62%; animation-delay: 0.6s; }
+  .dust.d4 { left: 80%; animation-delay: 0.2s; width: 4px; height: 4px; }
+  @keyframes dustRise {
+    0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+    15% { opacity: 0.9; }
+    100% { transform: translateY(-55px) translateX(8px) rotate(180deg); opacity: 0; }
+  }
+
+  /* --- Smoke (gray) --- */
+  .puff {
+    position: absolute;
+    bottom: -4px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.55), transparent 70%);
+    filter: blur(4px);
+    opacity: 0;
+    animation: smokeRise 2s ease-out infinite;
+  }
+  .puff.p1 { left: 30%; animation-delay: 0s; }
+  .puff.p2 { left: 50%; animation-delay: 0.5s; width: 20px; height: 20px; }
+  .puff.p3 { left: 68%; animation-delay: 0.9s; }
+  @keyframes smokeRise {
+    0% { transform: translateY(0) scale(0.5); opacity: 0; }
+    20% { opacity: 0.6; }
+    100% { transform: translateY(-65px) scale(1.7); opacity: 0; }
+  }
+
+  /* --- Lava (red) --- */
+  .lava-glow {
+    position: absolute;
+    inset: -25%;
+    background: radial-gradient(circle at 50% 100%, rgba(255,90,30,0.55), transparent 60%);
+    animation: lavaPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes lavaPulse {
+    0%, 100% { opacity: 0.35; transform: scale(0.92); }
+    50% { opacity: 0.75; transform: scale(1.05); }
+  }
+  .ember {
+    position: absolute;
+    bottom: 4%;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #ffb347;
+    box-shadow: 0 0 6px 2px rgba(255,140,40,0.9);
+    opacity: 0;
+    animation: emberRise 1.4s ease-in infinite;
+  }
+  .ember.e1 { left: 25%; animation-delay: 0s; }
+  .ember.e2 { left: 48%; animation-delay: 0.35s; }
+  .ember.e3 { left: 70%; animation-delay: 0.7s; }
+
+  @keyframes emberRise {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(-48px); opacity: 0; }
+  }
+
+  .icon-dot {
+    position: relative;
+    z-index: 2;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-solid);
+    box-shadow: 0 0 14px var(--accent-solid);
+    margin-bottom: 2px;
+  }
+  .btn-arrow {
+    position: relative;
+    z-index: 2;
+    font-size: 12px;
+    color: var(--accent-solid);
+    opacity: 0.85;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+  }
+  a.btn .btn-title {
+    position: relative;
+    z-index: 2;
+    font-weight: 700;
+    font-size: 14.5px;
+    letter-spacing: 0.01em;
+  }
+  a.btn .btn-desc {
+    position: relative;
+    z-index: 2;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.72);
+  }
+  a.btn:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-solid);
+    box-shadow: 0 16px 34px -6px var(--accent-glow), 0 0 0 1px var(--accent-solid) inset;
+  }
+  .blue    { --accent-grad: linear-gradient(160deg, #2f6fef 0%, #123a91 100%); --accent-solid: #2f6fef; --accent-glow: rgba(47,111,239,0.35); }
+  .brown   { --accent-grad: linear-gradient(160deg, #9a6a3f 0%, #4d2e15 100%); --accent-solid: #b07a45; --accent-glow: rgba(154,106,63,0.35); }
+  .gray    { --accent-grad: linear-gradient(160deg, #7a7f87 0%, #34383e 100%); --accent-solid: #9096a0; --accent-glow: rgba(122,127,135,0.35); }
+  .red     { --accent-grad: linear-gradient(160deg, #ef4444 0%, #7f1414 100%); --accent-solid: #ef4444; --accent-glow: rgba(239,68,68,0.35); }
+
+  .footer-row {
+    width: 100%;
+    max-width: 920px;
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+    padding-top: 26px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    border-top: 1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+  <button class="lang-toggle" id="langToggle" type="button">
+    <span class="globe">🌐</span><span id="langLabel">EN</span>
+  </button>
+
+  <div class="zodiac-bg">
+    <span style="top:6%; left:8%; font-size:64px; transform:rotate(-18deg);">♈</span>
+    <span style="top:14%; left:78%; font-size:80px; transform:rotate(12deg);">♉</span>
+    <span style="top:32%; left:4%; font-size:70px; transform:rotate(8deg);">♊</span>
+    <span style="top:4%; left:45%; font-size:56px; transform:rotate(-6deg);">♋</span>
+    <span style="top:48%; left:88%; font-size:66px; transform:rotate(-14deg);">♌</span>
+    <span style="top:60%; left:16%; font-size:58px; transform:rotate(20deg);">♍</span>
+    <span style="top:70%; left:60%; font-size:74px; transform:rotate(-10deg);">♎</span>
+    <span style="top:20%; left:60%; font-size:50px; transform:rotate(16deg);">♏</span>
+    <span style="top:82%; left:8%; font-size:62px; transform:rotate(-8deg);">♐</span>
+    <span style="top:85%; left:80%; font-size:58px; transform:rotate(10deg);">♑</span>
+    <span style="top:40%; left:38%; font-size:52px; transform:rotate(-4deg);">♒</span>
+    <span style="top:92%; left:45%; font-size:64px; transform:rotate(6deg);">♓</span>
+  </div>
+
+  <div class="brand-wrap">
+    <div class="brand-eyebrow" data-ru="welcome" data-en="welcome">welcome</div>
+    <h1>brend._.ay</h1>
+    <div class="brand-rule"></div>
+    <div class="brand-tag" data-ru="выбери направление" data-en="choose a direction">выбери направление</div>
+  </div>
+
+  <div class="row">
+    <a class="btn blue" href="https://t.me/mikita_kalllashinski_ay" target="_blank" rel="noopener">
+      <span class="fx">
+        <span class="bolt b1"></span>
+        <span class="bolt b2"></span>
+      </span>
+      <span class="icon-dot"></span>
+      <span class="btn-title">mikita_kalllashinski_ay</span>
+      <span class="btn-desc" data-ru="Инженерная аналитика данных" data-en="Data engineering &amp; analytics">Инженерная аналитика данных</span>
+      <span class="btn-arrow" data-ru="открыть →" data-en="open →">открыть →</span>
+    </a>
+    <a class="btn brown" href="https://t.me/content_de_contenidos_ay" target="_blank" rel="noopener">
+      <span class="fx">
+        <span class="dust d1"></span>
+        <span class="dust d2"></span>
+        <span class="dust d3"></span>
+        <span class="dust d4"></span>
+      </span>
+      <span class="icon-dot"></span>
+      <span class="btn-title">content_de_contenidos_ay</span>
+      <span class="btn-desc" data-ru="Навигатор по контенту: музыка, бизнес, блогерство" data-en="Content navigator: music, business, blogging">Навигатор по контенту: музыка, бизнес, блогерство</span>
+      <span class="btn-arrow" data-ru="открыть →" data-en="open →">открыть →</span>
+    </a>
+    <a class="btn gray" href="https://t.me/nikita_kalllashinski_ay" target="_blank" rel="noopener">
+      <span class="fx">
+        <span class="puff p1"></span>
+        <span class="puff p2"></span>
+        <span class="puff p3"></span>
+      </span>
+      <span class="icon-dot"></span>
+      <span class="btn-title">nikita_kalllashinski_ay</span>
+      <span class="btn-desc" data-ru="Премиум личной информации из жизни" data-en="Premium personal life insights">Премиум личной информации из жизни</span>
+      <span class="btn-arrow" data-ru="открыть →" data-en="open →">открыть →</span>
+    </a>
+  </div>
+
+  <div class="footer-row">
+    <a class="btn red" href="https://t.me/apoyo_tecnico_ay" target="_blank" rel="noopener">
+      <span class="fx">
+        <span class="lava-glow"></span>
+        <span class="ember e1"></span>
+        <span class="ember e2"></span>
+        <span class="ember e3"></span>
+      </span>
+      <span class="icon-dot"></span>
+      <span class="btn-title">apoyo_tecnico_ay</span>
+      <span class="btn-desc" data-ru="Поддержка" data-en="Support">Поддержка</span>
+      <span class="btn-arrow" data-ru="открыть →" data-en="open →">открыть →</span>
+    </a>
+  </div>
+
+  <script>
+    (function () {
+      var isEn = false;
+      var toggle = document.getElementById('langToggle');
+      var label = document.getElementById('langLabel');
+      var nodes = document.querySelectorAll('[data-ru][data-en]');
+      toggle.addEventListener('click', function () {
+        isEn = !isEn;
+        nodes.forEach(function (el) {
+          el.textContent = isEn ? el.getAttribute('data-en') : el.getAttribute('data-ru');
+        });
+        label.textContent = isEn ? 'RU' : 'EN';
+        document.documentElement.setAttribute('lang', isEn ? 'en' : 'ru');
+      });
+    })();
+  </script>
+</body>
+</html>
